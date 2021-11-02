@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище ТурАгенствоModel1" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Отели">
+          <Key>
+            <PropertyRef Name="ИД_отели" />
+          </Key>
+          <Property Name="ИД_отели" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Название" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="КоличествоЗвезд" Type="int" Nullable="false" />
+          <Property Name="КодСтраны" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Страны">
+          <Key>
+            <PropertyRef Name="КодСтраны" />
+          </Key>
+          <Property Name="КодСтраны" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Страны" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "ТурАгенство .dbo.ТипыТуров" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="ТипыТуров">
+          <Key>
+            <PropertyRef Name="ИД" />
+            <PropertyRef Name="Название" />
+          </Key>
+          <Property Name="ИД" Type="int" Nullable="false" />
+          <Property Name="Название" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Описание" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Туры">
+          <Key>
+            <PropertyRef Name="ИД_тура" />
+          </Key>
+          <Property Name="ИД_тура" Type="int" Nullable="false" />
+          <Property Name="НазваниеТура" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="КодСтраны" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="КоличествоБилетов" Type="int" Nullable="false" />
+          <Property Name="Цена" Type="money" Nullable="false" />
+          <Property Name="Актуальность" Type="bit" Nullable="false" />
+          <Property Name="ТипыТуров" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ФотоТура">
+          <Key>
+            <PropertyRef Name="ИД_фото" />
+          </Key>
+          <Property Name="ИД_фото" Type="int" Nullable="false" />
+          <Property Name="ИД_тура" Type="int" Nullable="false" />
+          <Property Name="ИсточникФото" Type="image" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Туры_Страны">
+          <End Role="Страны" Type="Self.Страны" Multiplicity="1" />
+          <End Role="Туры" Type="Self.Туры" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Страны">
+              <PropertyRef Name="КодСтраны" />
+            </Principal>
+            <Dependent Role="Туры">
+              <PropertyRef Name="КодСтраны" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ФотоТура_Туры">
+          <End Role="Туры" Type="Self.Туры" Multiplicity="1" />
+          <End Role="ФотоТура" Type="Self.ФотоТура" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Туры">
+              <PropertyRef Name="ИД_тура" />
+            </Principal>
+            <Dependent Role="ФотоТура">
+              <PropertyRef Name="ИД_тура" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище ТурАгенствоModel1Container">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Отели" EntityType="Self.Отели" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Страны" EntityType="Self.Страны" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Туры" EntityType="Self.Туры" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ФотоТура" EntityType="Self.ФотоТура" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ТипыТуров" EntityType="Self.ТипыТуров" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ТипыТуров].[ИД] AS [ИД], 
+    [ТипыТуров].[Название] AS [Название], 
+    [ТипыТуров].[Описание] AS [Описание]
+    FROM [dbo].[ТипыТуров] AS [ТипыТуров]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Туры_Страны" Association="Self.FK_Туры_Страны">
+            <End Role="Страны" EntitySet="Страны" />
+            <End Role="Туры" EntitySet="Туры" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ФотоТура_Туры" Association="Self.FK_ФотоТура_Туры">
+            <End Role="Туры" EntitySet="Туры" />
+            <End Role="ФотоТура" EntitySet="ФотоТура" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ТурАгенствоModel1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Отели">
+          <Key>
+            <PropertyRef Name="ИД_отели" />
+          </Key>
+          <Property Name="ИД_отели" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Название" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="КоличествоЗвезд" Type="Int32" Nullable="false" />
+          <Property Name="КодСтраны" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Страны">
+          <Key>
+            <PropertyRef Name="КодСтраны" />
+          </Key>
+          <Property Name="КодСтраны" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Страны1" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Туры" Relationship="Self.FK_Туры_Страны" FromRole="Страны" ToRole="Туры" />
+        </EntityType>
+        <EntityType Name="Туры">
+          <Key>
+            <PropertyRef Name="ИД_тура" />
+          </Key>
+          <Property Name="ИД_тура" Type="Int32" Nullable="false" />
+          <Property Name="НазваниеТура" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="КодСтраны" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="КоличествоБилетов" Type="Int32" Nullable="false" />
+          <Property Name="Цена" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Актуальность" Type="Boolean" Nullable="false" />
+          <Property Name="ТипыТуров" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Страны" Relationship="Self.FK_Туры_Страны" FromRole="Туры" ToRole="Страны" />
+          <NavigationProperty Name="ФотоТура" Relationship="Self.FK_ФотоТура_Туры" FromRole="Туры" ToRole="ФотоТура" />
+        </EntityType>
+        <EntityType Name="ФотоТура">
+          <Key>
+            <PropertyRef Name="ИД_фото" />
+          </Key>
+          <Property Name="ИД_фото" Type="Int32" Nullable="false" />
+          <Property Name="ИД_тура" Type="Int32" Nullable="false" />
+          <Property Name="ИсточникФото" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="Туры" Relationship="Self.FK_ФотоТура_Туры" FromRole="ФотоТура" ToRole="Туры" />
+        </EntityType>
+        <EntityType Name="ТипыТуров">
+          <Key>
+            <PropertyRef Name="ИД" />
+            <PropertyRef Name="Название" />
+          </Key>
+          <Property Name="ИД" Type="Int32" Nullable="false" />
+          <Property Name="Название" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Описание" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Туры_Страны">
+          <End Role="Страны" Type="Self.Страны" Multiplicity="1" />
+          <End Role="Туры" Type="Self.Туры" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Страны">
+              <PropertyRef Name="КодСтраны" />
+            </Principal>
+            <Dependent Role="Туры">
+              <PropertyRef Name="КодСтраны" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ФотоТура_Туры">
+          <End Role="Туры" Type="Self.Туры" Multiplicity="1" />
+          <End Role="ФотоТура" Type="Self.ФотоТура" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Туры">
+              <PropertyRef Name="ИД_тура" />
+            </Principal>
+            <Dependent Role="ФотоТура">
+              <PropertyRef Name="ИД_тура" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ТурАгенствоEntities2" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Отели" EntityType="Self.Отели" />
+          <EntitySet Name="Страны" EntityType="Self.Страны" />
+          <EntitySet Name="Туры" EntityType="Self.Туры" />
+          <EntitySet Name="ФотоТура" EntityType="Self.ФотоТура" />
+          <EntitySet Name="ТипыТуров" EntityType="Self.ТипыТуров" />
+          <AssociationSet Name="FK_Туры_Страны" Association="Self.FK_Туры_Страны">
+            <End Role="Страны" EntitySet="Страны" />
+            <End Role="Туры" EntitySet="Туры" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ФотоТура_Туры" Association="Self.FK_ФотоТура_Туры">
+            <End Role="Туры" EntitySet="Туры" />
+            <End Role="ФотоТура" EntitySet="ФотоТура" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище ТурАгенствоModel1Container" CdmEntityContainer="ТурАгенствоEntities2">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ТурАгенствоModel1.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Отели">
+            <EntityTypeMapping TypeName="ТурАгенствоModel1.Отели">
+              <MappingFragment StoreEntitySet="Отели">
+                <ScalarProperty Name="ИД_отели" ColumnName="ИД_отели" />
+                <ScalarProperty Name="Название" ColumnName="Название" />
+                <ScalarProperty Name="КоличествоЗвезд" ColumnName="КоличествоЗвезд" />
+                <ScalarProperty Name="КодСтраны" ColumnName="КодСтраны" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Страны">
+            <EntityTypeMapping TypeName="ТурАгенствоModel1.Страны">
+              <MappingFragment StoreEntitySet="Страны">
+                <ScalarProperty Name="КодСтраны" ColumnName="КодСтраны" />
+                <ScalarProperty Name="Страны1" ColumnName="Страны" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Туры">
+            <EntityTypeMapping TypeName="ТурАгенствоModel1.Туры">
+              <MappingFragment StoreEntitySet="Туры">
+                <ScalarProperty Name="ИД_тура" ColumnName="ИД_тура" />
+                <ScalarProperty Name="НазваниеТура" ColumnName="НазваниеТура" />
+                <ScalarProperty Name="КодСтраны" ColumnName="КодСтраны" />
+                <ScalarProperty Name="КоличествоБилетов" ColumnName="КоличествоБилетов" />
+                <ScalarProperty Name="Цена" ColumnName="Цена" />
+                <ScalarProperty Name="Актуальность" ColumnName="Актуальность" />
+                <ScalarProperty Name="ТипыТуров" ColumnName="ТипыТуров" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ФотоТура">
+            <EntityTypeMapping TypeName="ТурАгенствоModel1.ФотоТура">
+              <MappingFragment StoreEntitySet="ФотоТура">
+                <ScalarProperty Name="ИД_фото" ColumnName="ИД_фото" />
+                <ScalarProperty Name="ИД_тура" ColumnName="ИД_тура" />
+                <ScalarProperty Name="ИсточникФото" ColumnName="ИсточникФото" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ТипыТуров">
+            <EntityTypeMapping TypeName="ТурАгенствоModel1.ТипыТуров">
+              <MappingFragment StoreEntitySet="ТипыТуров">
+                <ScalarProperty Name="ИД" ColumnName="ИД" />
+                <ScalarProperty Name="Название" ColumnName="Название" />
+                <ScalarProperty Name="Описание" ColumnName="Описание" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
